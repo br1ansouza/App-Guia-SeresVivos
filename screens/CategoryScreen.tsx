@@ -14,7 +14,7 @@ type Props = {
 };
 
 const CategoryScreen = ({ route, navigation }: Props) => {
-  const { category } = route.params;  // Recebe a categoria da tela anterior
+  const { category } = route.params;  
   const [items, setItems] = useState([]);
 
   useEffect(() => {

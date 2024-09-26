@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, TextInput, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 
 type ScreenType = 'Home' | 'Animais' | 'Plantas' | 'Fungos' | 'Monera' | 'Protista';
-
 
 const categoryDescriptions: { [key in ScreenType]?: string } = {
   Animais: 'Os animais são organismos multicelulares que fazem parte do reino Animalia.',
@@ -12,7 +11,6 @@ const categoryDescriptions: { [key in ScreenType]?: string } = {
   Monera: 'Organismos unicelulares procariontes fazem parte do reino Monera.',
   Protista: 'Organismos unicelulares e multicelulares simples pertencem ao reino Protista.',
 };
-
 
 const HomeScreen = ({ onNavigate }: { onNavigate: (screen: ScreenType) => void }) => (
   <View style={styles.container}>
@@ -53,16 +51,19 @@ const HomeScreen = ({ onNavigate }: { onNavigate: (screen: ScreenType) => void }
   </View>
 );
 
-// Tela da categoria
+
 const CategoryScreen = ({ category, onNavigateBack }: { category: ScreenType; onNavigateBack: () => void }) => {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState('');
+  const [filteredItems, setFilteredItems] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const response = await axios.get(`http://192.168.17.3:3000/${category.toLowerCase()}`);
         setItems(response.data);
+        setFilteredItems(response.data);
         setLoading(false);
       } catch (error) {
         console.error('Erro ao buscar os itens da categoria:', error);
@@ -72,6 +73,13 @@ const CategoryScreen = ({ category, onNavigateBack }: { category: ScreenType; on
 
     fetchItems();
   }, [category]);
+
+  useEffect(() => {
+    const filtered = items.filter((item) =>
+      item.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredItems(filtered);
+  }, [searchText, items]);
 
   if (loading) {
     return (
@@ -83,8 +91,16 @@ const CategoryScreen = ({ category, onNavigateBack }: { category: ScreenType; on
 
   return (
     <View style={styles.container}>
+      <TextInput
+        style={styles.searchInput}
+        placeholder={`Buscar em ${category}...`}
+        placeholderTextColor="#888"
+        value={searchText}
+        onChangeText={setSearchText}
+      />
+
       <FlatList
-        data={items}
+        data={filteredItems}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.itemContainer}>
@@ -133,12 +149,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#212121', // Cor de fundo suave
+    backgroundColor: '#212121', 
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
-    color: '#fff', // Texto branco no título
+    color: '#fff', 
   },
   categoryContainer: {
     width: '100%',
@@ -154,17 +170,17 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
     flex: 1,
-    color: '#fff', // Texto branco nas descrições
+    color: '#fff', 
   },
   button: {
     padding: 10,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    width: 120, // Aumentando a largura dos botões
+    width: 120, 
   },
   buttonText: {
-    color: '#fff', // Texto branco dentro dos botões
+    color: '#fff', 
     fontWeight: 'bold',
   },
   button1: {
@@ -212,6 +228,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
   },
+  searchInput: {
+    width: '100%', 
+    paddingVertical: 8, 
+    paddingHorizontal: 15, 
+    borderColor: '#fff',
+    borderWidth: 1,
+    borderRadius: 8,
+    backgroundColor: '#f4d092', 
+    color: '#fff',
+    marginVertical: 10, 
+  },
+  
 });
 
 export default App;
