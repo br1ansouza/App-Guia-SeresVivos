@@ -1,6 +1,7 @@
 # 🐯 Guia Seres Vivos
 Este é um aplicativo mobile desenvolvido em React Native, cujo objetivo é servir como um guia de seres vivos, categorizando os organismos em grupos específicos como Animais, Plantas, Fungos, Monera e Protista. O aplicativo permite ao usuário selecionar uma categoria e explorar informações detalhadas sobre os organismos pertencentes a cada uma delas.
-Funcionalidades
+
+## Funcionalidades
 - Navegação entre as categorias de seres vivos.
 - Exibição de informações detalhadas sobre cada ser vivo de acordo com a categoria.
 - Barra de pesquisa para filtrar os itens dentro de cada categoria.
